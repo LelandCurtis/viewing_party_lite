@@ -12,7 +12,7 @@ class UsersController < ApplicationController
       redirect_to user_path(user)
     else
       redirect_to "/register"
-      flash[:alert] = "Error: please enter a name and unique email to register."
+      flash[:alert] = user.errors.full_messages.to_sentence
     end
   end
 
@@ -20,9 +20,29 @@ class UsersController < ApplicationController
     @user = User.find(params[:user_id])
   end
 
+  def login_form
+  end
+
+  def login_user
+    user = User.find_by_email(params[:email])
+
+    if user == nil
+      flash[:alert] = "Email not found"
+      redirect_to "/login"
+    elsif user.authenticate(params[:password]) == false
+      flash[:alert] = "Incorrect Password"
+      redirect_to "/login"
+    elsif user.authenticate(params[:password]) == user
+      redirect_to "/users/#{user.id}"
+    else
+      flash[:alert] = "Something went wrong"
+      redirect_to "/login"
+    end
+  end
+
 private
 
   def user_params
-    params.require(:user).permit(:name, :email)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
   end
 end

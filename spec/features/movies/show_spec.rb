@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'movie details page' do
-  let!(:user) {User.create(name: 'Jeff', email: 'jeff@email.com')}
+  let!(:user) {User.create!(name: 'Jeff', email: 'jeff@email.com', password: '123', password_confirmation: '123')}
   let!(:dune_url) {"/users/#{user.id}/movies/438631"}
 
   before(:each) do

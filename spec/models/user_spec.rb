@@ -10,7 +10,15 @@ RSpec.describe User, type: :model do
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:email) }
     it { should validate_uniqueness_of(:email) }
-  end 
+    it { should have_secure_password }
+
+    it "doesn't store passwords improperly" do
+      user = create(:user, password: 'password', password_confirmation: 'password')
+      expect(user).to_not have_attribute(:password)
+      expect(user).to_not have_attribute(:password_confirmation)
+      expect(user.password_digest).to_not eq('password')
+    end
+  end
 
   describe 'instance methods' do
     describe '#host_parties' do
@@ -49,6 +57,17 @@ RSpec.describe User, type: :model do
         user_4 = create(:user, name: 'Dave')
 
         expect(User.not_host(user_2.id)).to eq([user_1, user_3, user_4])
+      end
+    end
+
+    describe 'find_by_email' do
+      it "returns the user who matches the given email" do
+        user_1 = create(:user, email: "user_1@email.com")
+        user_2 = create(:user, email: "user123135@email.com")
+        user_3 = create(:user, email: "user1231231@email.com")
+
+        expect(User.find_by_email("user_1@email.com")).to eq(user_1)
+        expect(User.find_by_email("user1231231@email.com")).to eq(user_3)
       end
     end
   end
