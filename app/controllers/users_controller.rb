@@ -20,8 +20,24 @@ class UsersController < ApplicationController
     @user = User.find(params[:user_id])
   end
 
-  def login
+  def login_form
+  end
 
+  def login_user
+    user = User.find_by_email(params[:email])
+
+    if user == nil
+      flash[:alert] = "Email not found"
+      redirect_to "/login"
+    elsif user.authenticate(params[:password]) == false
+      flash[:alert] = "Incorrect Password"
+      redirect_to "/login"
+    elsif user.authenticate(params[:password]) == user
+      redirect_to "/users/#{user.id}"
+    else
+      flash[:alert] = "Something went wrong"
+      redirect_to "/login"
+    end
   end
 
 private

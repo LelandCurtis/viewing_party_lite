@@ -33,6 +33,6 @@ RSpec.describe 'landing page' do
   it "links to user login page" do
     expect(page).to have_link "Log In"
     click_link "Log In"
-    expect(current_path).to eq("/users/login")
+    expect(current_path).to eq("/login")
   end
 end

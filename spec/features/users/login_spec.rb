@@ -4,12 +4,10 @@ RSpec.describe 'login page' do
   let!(:user) { create(:user, name: 'Tim', email: 'tim@email.com', password: '123', password_confirmation: '123') }
   context 'happy path: correct info' do
     it "has a form that allows the user to login and get redirected to their user show page" do
-      visit "/users/login"
+      visit "/login"
 
-      fill_in 'user[name]', with: "Megan"
-      fill_in 'user[email]', with: "megan@email.com"
-      fill_in 'user[password]', with: "password"
-      fill_in 'user[password_confirmation]', with: "password"
+      fill_in 'email', with: "tim@email.com"
+      fill_in 'password', with: "123"
       click_button("Log In")
 
       expect(current_path).to eq(user_path(user))
@@ -17,30 +15,35 @@ RSpec.describe 'login page' do
   end
 
   context 'sad path: bad info' do
-    it "redirects back to login page if info is incorrect" do
-      visit "/users/login"
+    it "redirects back to login page if info is blank" do
+      visit "/login"
 
-      fill_in 'user[name]', with: "Megan"
-      fill_in 'user[email]', with: "megan@email.com"
-      fill_in 'user[password]', with: "password"
-      fill_in 'user[password_confirmation]', with: "password123"
       click_button("Log In")
 
-      expect(current_path).to eq("/users/login")
-      expect(page).to have_content("Name can't be blank, Email can't be blank, and Password can't be blank")
+      expect(current_path).to eq("/login")
+      expect(page).to have_content("Email not found")
     end
 
-    it "redirects back to login page if ipasswords do not match" do
-      visit "/users/login"
+    it "redirects back to login page if email is not in system" do
+      visit "/login"
 
-      fill_in 'user[name]', with: "Megan"
-      fill_in 'user[email]', with: "megan@email.com"
-      fill_in 'user[password]', with: "password"
-      fill_in 'user[password_confirmation]', with: "password123"
+      fill_in 'email', with: "tim23423525@email.com"
+      fill_in 'password', with: "123"
       click_button("Log In")
 
-      expect(current_path).to eq("/users/login")
-      expect(page).to have_content("Password confirmation doesn't match Password")
+      expect(current_path).to eq("/login")
+      expect(page).to have_content("Email not found")
+    end
+
+    it "redirects back to login page if passwords do not match" do
+      visit "/login"
+
+      fill_in 'email', with: "tim@email.com"
+      fill_in 'password', with: "password123"
+      click_button("Log In")
+
+      expect(current_path).to eq("/login")
+      expect(page).to have_content("Incorrect Password")
     end
   end
 end

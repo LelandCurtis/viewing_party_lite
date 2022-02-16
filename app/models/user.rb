@@ -16,4 +16,8 @@ class User < ApplicationRecord
   def self.not_host(user_id)
     User.where.not(id: user_id)
   end
+
+  def self.find_by_email(email)
+    User.where(email: email).first
+  end
 end
