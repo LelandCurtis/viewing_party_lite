@@ -12,7 +12,7 @@ class UsersController < ApplicationController
       redirect_to user_path(user)
     else
       redirect_to "/register"
-      flash[:alert] = "Error: please enter a name and unique email to register."
+      flash[:alert] = user.errors.full_messages.to_sentence
     end
   end
 
