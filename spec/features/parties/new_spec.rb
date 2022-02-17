@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'new viewing party page' do
-  let!(:user) {create(:user, name: "Jeff", email: "jeff@email.com")}
+  let!(:user) {create(:user, name: "Jeff", email: "jeff@email.com", password: 'password', password_confirmation: 'password')}
 
   it "exists" do
     VCR.use_cassette('new_viewing_party_dune') do
@@ -53,6 +53,13 @@ RSpec.describe 'new viewing party page' do
   end
 
   it "has a submit button that creates a new viewing party and party_user objects and redirects to user dashboard" do
+
+    visit "/login"
+    fill_in 'email', with: user.email
+    fill_in 'password', with: 'password'
+    click_button("Log In")
+
+
     user_1 = create(:user, name: 'Abby')
     user_2 = create(:user, name: 'Bob')
     user_3 = create(:user, name: 'Christy')
@@ -100,7 +107,7 @@ RSpec.describe 'new viewing party page' do
       expect(party_user_4.user_id).to eq(user_4.id)
       expect(party_user_4.host).to eq(false)
 
-      expect(current_path).to eq("/users/#{user.id}")
+      expect(current_path).to eq("/dashboard")
     end
   end
 

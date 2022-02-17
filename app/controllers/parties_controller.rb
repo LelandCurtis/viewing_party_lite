@@ -31,7 +31,7 @@ class PartiesController < ApplicationController
         end
       end
 
-      redirect_to "/users/#{params[:user_id]}"
+      redirect_to "/dashboard"
     end
   end
 end

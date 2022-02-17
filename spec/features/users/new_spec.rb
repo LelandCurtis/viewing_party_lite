@@ -15,7 +15,7 @@ RSpec.describe 'new user page' do
     expect(current_path).to eq(root_path)
   end
 
-  it 'can create new user' do
+  it 'can create new user and add that user to the session' do
     fill_in 'user[name]', with: "Megan"
     fill_in 'user[email]', with: "megan@email.com"
     fill_in 'user[password]', with: "password"
@@ -23,8 +23,9 @@ RSpec.describe 'new user page' do
     click_button("Create New User")
     user = User.last
 
-    expect(current_path).to eq(user_path(user))
+    expect(current_path).to eq("/dashboard")
     expect(page).to have_content("#{user.name}'s Dashboard")
+    #expect(session[:user_id]).to eq(user.id)
   end
 
   it 'shows error if user not created' do

@@ -4,8 +4,11 @@ Rails.application.routes.draw do
 
   get '/login', to: 'users#login_form'
   post '/login', to: 'users#login_user'
+  get '/register', to: 'users#new'
 
-  resources :users, only: [:index, :show, :create] do
+
+
+  resources :users, only: [:index, :create] do
     get '/discover', to: 'users#discover'
     post '/movies', to: 'movies#index'
     resources :movies, only: [:index, :show] do
@@ -14,6 +17,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/register', to: 'users#new'
+  get '/dashboard', to: 'users#show'
+
+
 
 end
