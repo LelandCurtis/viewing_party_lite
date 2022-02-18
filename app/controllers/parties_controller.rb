@@ -1,16 +1,17 @@
 class PartiesController < ApplicationController
+  before_action :login, only: [:new, :create, :index, :show]
+
   def new
-    @user = User.find(params[:user_id])
-    @viewers = User.not_host(params[:user_id])
+    @viewers = User.not_host(session[:user_id])
     @movie = MovieFacade.movie_info(params[:movie_id])
   end
 
   def create
-    user = User.find(params[:user_id])
+    user = User.find(session[:user_id])
     movie = MovieFacade.movie_info(params[:movie_id])
 
     if params[:duration].to_i < movie.runtime.to_i
-      redirect_to "/users/#{user.id}/movies/#{movie.id}/viewing-party/new"
+      redirect_to "/movies/#{movie.id}/viewing-party/new"
       flash[:alert] = "Error: please enter a duration that is longer than the movie run time."
 
     else
@@ -19,10 +20,11 @@ class PartiesController < ApplicationController
                   start_time: params[:start_time])
 
       PartyUser.create(party_id: party.id,
-                      user_id: params[:user_id],
+                      user_id: session[:user_id],
                       host: true)
 
 
+      
       if params[:users]
         params[:users].keys.each do |user_id|
           PartyUser.create(party_id: party.id,
@@ -31,7 +33,7 @@ class PartiesController < ApplicationController
         end
       end
 
-      redirect_to "/users/#{params[:user_id]}"
+      redirect_to "/dashboard"
     end
   end
 end

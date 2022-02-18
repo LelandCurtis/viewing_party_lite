@@ -1,7 +1,7 @@
 class MoviesController < ApplicationController
+  before_action :login, only: [:index, :show]
 
   def index
-    @user = User.find(params[:user_id])
     if params[:q] == "top rated"
       @movies = MovieFacade.top_movies
       @heading = "Top Rated Movies"
@@ -12,7 +12,6 @@ class MoviesController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:user_id])
     @details = MovieFacade.movie_info(params[:id])
     @cast = MovieFacade.movie_cast(params[:id])
     @reviews = MovieFacade.movie_reviews(params[:id])

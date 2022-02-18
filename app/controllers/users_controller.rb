@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
+  before_action :login, only: [:show, :discover]
+
   def show
-    @user = User.find(params[:id])
   end
 
   def new
@@ -9,7 +10,8 @@ class UsersController < ApplicationController
   def create
     user = User.create(user_params)
     if user.save
-      redirect_to user_path(user)
+      session[:user_id] = user.id
+      redirect_to "/dashboard"
     else
       redirect_to "/register"
       flash[:alert] = user.errors.full_messages.to_sentence
@@ -17,7 +19,6 @@ class UsersController < ApplicationController
   end
 
   def discover
-    @user = User.find(params[:user_id])
   end
 
   def login_form
@@ -33,14 +34,20 @@ class UsersController < ApplicationController
       flash[:alert] = "Incorrect Password"
       redirect_to "/login"
     elsif user.authenticate(params[:password]) == user
-      redirect_to "/users/#{user.id}"
+      session[:user_id] = user.id
+      redirect_to "/dashboard"
     else
       flash[:alert] = "Something went wrong"
       redirect_to "/login"
     end
   end
 
-private
+  def destroy
+    session.destroy
+    redirect_to root_path
+  end
+
+  private
 
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation)

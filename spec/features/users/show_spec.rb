@@ -1,21 +1,28 @@
 require 'rails_helper'
 
 RSpec.describe 'user dashboard' do
-  let!(:user_1) {create(:user, name: "Jeff", email: "jeff@email.com")}
+  let!(:user_1) {create(:user, name: "Jeff", email: "jeff@email.com", password: 'password')}
   let!(:user_2) {create(:user, name: "Amy", email: "amy@email.com")}
 
+  before(:each) do
+    visit "/login"
+    fill_in 'email', with: user_1.email
+    fill_in 'password', with: 'password'
+    click_button("Log In")
+  end
+
   it 'shows page title with user name' do
-    visit user_path(user_1)
+    visit '/dashboard'
     expect(page).to have_content("Jeff's Dashboard")
   end
 
   it 'has a button to discover movies that redirects to a discover page associated with that user ' do
-    visit user_path(user_1)
+    visit '/dashboard'
     expect(page).to have_button("Discover Movies")
 
     click_button "Discover Movies"
 
-    expect(current_path).to eq("/users/#{user_1.id}/discover")
+    expect(current_path).to eq("/discover")
   end
 
   describe 'viewing party sections' do
@@ -25,7 +32,7 @@ RSpec.describe 'user dashboard' do
         movie = MovieFacade.get_first_movie('dune')
         party = create(:party, host: user_1, movie_id: movie.id)
 
-        visit user_path(user_1)
+        visit '/dashboard'
 
         expect(page).to have_css("img[src*='https://image.tmdb.org/t/p/original/d5NXSklXo0qyIYkgV94XAgMIckC.jpg']")
       end
@@ -36,10 +43,10 @@ RSpec.describe 'user dashboard' do
         movie = MovieFacade.get_first_movie('dune')
         party = create(:party, host: user_1, movie_id: movie.id)
 
-        visit user_path(user_1)
+        visit '/dashboard'
 
         click_link "Title: Dune"
-        expect(current_path).to eq("/users/#{user_1.id}/movies/#{movie.id}")
+        expect(current_path).to eq("/movies/#{movie.id}")
       end
     end
 
@@ -48,7 +55,7 @@ RSpec.describe 'user dashboard' do
         movie = MovieFacade.get_first_movie('dune')
         party = create(:party, host: user_1, movie_id: movie.id, start_time: DateTime.new(2022, 02, 02, 18, 10, 0))
 
-        visit user_path(user_1)
+        visit '/dashboard'
 
         expect(page).to have_content("Date: Feb 2, 2022")
         expect(page).to have_content("Time: 6:10 PM")
@@ -60,7 +67,7 @@ RSpec.describe 'user dashboard' do
         movie = MovieFacade.get_first_movie('dune')
         party = create(:party_with_viewers, host: user_1, viewer_count: 4, movie_id: movie.id, start_time: DateTime.new(2022, 02, 02, 18, 10, 0))
 
-        visit user_path(user_1)
+        visit '/dashboard'
 
         expect(page).to have_content("Hosting")
       end
@@ -75,7 +82,7 @@ RSpec.describe 'user dashboard' do
         viewers = [viewer_1, viewer_2, viewer_3]
         party = create(:party_with_viewers, host: user_1, viewers: viewers, movie_id: movie.id, start_time: DateTime.new(2022, 02, 02, 18, 10, 0))
 
-        visit user_path(user_1)
+        visit '/dashboard'
 
         within "div.movie_#{movie.id}_viewers" do
           expect(page).to have_content("Abby")
@@ -101,7 +108,7 @@ RSpec.describe 'user dashboard' do
             party_2 = create(:party_with_viewers, host: user_2, viewers: [user_1, user_3, user_4], movie_id: movie_2.id, start_time: DateTime.new(2022, 02, 02, 14, 00, 0))
             party_3 = create(:party_with_viewers, host: user_3, viewers: [user_1, user_4], movie_id: movie_3.id, start_time: DateTime.new(2022, 02, 02, 18, 30, 0))
 
-            visit user_path(user_1)
+            visit '/dashboard'
 
             within "div.viewing_party_#{movie_1.id}" do
               expect(page).to have_content("Hosting")
