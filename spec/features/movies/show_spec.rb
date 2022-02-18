@@ -40,9 +40,11 @@ RSpec.describe 'movie details page' do
   end
 
   it 'links to viewing-party/new' do
-    expect(page).to have_link("Create Viewing Party for Dune")
-    click_link "Create Viewing Party for Dune"
-    expect(current_path).to eq("/movies/438631/viewing-party/new")
+    VCR.use_cassette('new_viewing_party_link_test') do
+      expect(page).to have_link("Create Viewing Party for Dune")
+      click_link "Create Viewing Party for Dune"
+      expect(current_path).to eq("/movies/438631/viewing-party/new")
+    end
   end
 
   it 'shows movie title' do

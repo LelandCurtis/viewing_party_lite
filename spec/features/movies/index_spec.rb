@@ -90,7 +90,7 @@ RSpec.describe 'user movie results page' do
 
       within("#movie-id-730154") do
         expect(page).to have_content("Your Eyes Tell")
-        expect(page).to have_content("Vote average: 8.8")
+        expect(page).to have_content("Vote average: 8.7")
       end
 
       within("#movie-id-19404") do
@@ -116,7 +116,7 @@ RSpec.describe 'user movie results page' do
 
       within("#movie-id-841") do
         expect(page).to have_content("Dune")
-        expect(page).to have_content("Vote average: 6.3")
+        expect(page).to have_content("Vote average: 6.2")
       end
 
       within("#movie-id-191720") do
@@ -130,12 +130,14 @@ RSpec.describe 'user movie results page' do
     VCR.use_cassette('user_dune_search') do
       VCR.use_cassette('dune_details') do
         VCR.use_cassette('dune_reviews') do
-          visit search_url
+          VCR.use_cassette('dune_extra') do
+            visit search_url
 
-          within("#movie-id-438631") do
-            expect(page).to have_link("Dune")
-            first(:link, "Dune").click
-            expect(current_path).to eq("/movies/438631")
+            within("#movie-id-438631") do
+              expect(page).to have_link("Dune")
+              first(:link, "Dune").click
+              expect(current_path).to eq("/movies/438631")
+            end
           end
         end
       end
