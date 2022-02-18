@@ -17,18 +17,12 @@ RSpec.describe 'landing page' do
     expect(current_path).to eq("/register")
   end
 
-  it 'has links to existing user dashboards' do
-    expect(page).to have_link("jeff@email.com")
-    expect(page).to have_link("amy@email.com")
-
+  it 'has does n0t show existing user emails if user is not logged in' do
+    expect(page).to_not have_content("jeff@email.com")
+    expect(page).to_not have_content("amy@email.com")
   end
 
-  it "has links that redirect to login page if user has not logged in" do
-    click_link "jeff@email.com"
-    expect(current_path).to eq("/login")
-  end
-
-  it "has links that redirect to user dashboard page if that user has logged in" do
+  it 'has existing user emails if user logged in' do
     visit "/login"
     fill_in 'email', with: user_1.email
     fill_in 'password', with: 'password'
@@ -36,8 +30,8 @@ RSpec.describe 'landing page' do
 
     visit root_path
 
-    click_link "jeff@email.com"
-    expect(current_path).to eq("/dashboard")
+    expect(page).to have_content("jeff@email.com")
+    expect(page).to have_content("amy@email.com")
   end
 
   it 'links back to landing page' do

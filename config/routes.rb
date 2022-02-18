@@ -4,12 +4,13 @@ Rails.application.routes.draw do
 
   get '/login', to: 'users#login_form'
   post '/login', to: 'users#login_user'
+  get '/logout', to: 'users#destroy'
   get '/register', to: 'users#new'
 
 
 
   resources :users, only: [:index, :create]
-  
+
   post '/movies', to: 'movies#index'
   get '/discover', to: 'users#discover'
   get '/dashboard', to: 'users#show'
