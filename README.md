@@ -44,6 +44,9 @@ Tested using:
 4. Get an API key from `https://www.themoviedb.org/`
 5. Set API key using figaro. Open `config/application.yml` and add `movie_api_key: '<your_api_key>'`
 
+## Heroku link
+`https://viewing-party-2110.herokuapp.com/`
+
 ## Database Schema
 
 ![image](https://user-images.githubusercontent.com/15107515/152598066-5fa3a9cd-dbaf-4ffd-b49a-79bff90cc02b.png)
