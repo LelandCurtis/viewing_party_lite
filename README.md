@@ -41,6 +41,8 @@ Tested using:
 1. Fork and Clone the repo
 2. Install gem packages: `bundle install`
 3. Setup the database: `rails db:create`
+4. Get an API key from `https://www.themoviedb.org/`
+5. Set API key using figaro. Open `config/application.yml` and add `movie_api_key: '<your_api_key>'`
 
 ## Database Schema
 
