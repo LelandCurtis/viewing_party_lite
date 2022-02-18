@@ -2,12 +2,18 @@ require 'rails_helper'
 
 RSpec.describe 'movie details page' do
   let!(:user) {User.create!(name: 'Jeff', email: 'jeff@email.com', password: '123', password_confirmation: '123')}
-  let!(:dune_url) {"/users/#{user.id}/movies/438631"}
+  let!(:dune_url) {"/movies/438631"}
 
   before(:each) do
     VCR.insert_cassette('dune_details')
     VCR.insert_cassette('dune_reviews')
     VCR.insert_cassette('dune_new_party')
+
+    visit "/login"
+    fill_in 'email', with: user.email
+    fill_in 'password', with: "123"
+    click_button("Log In")
+
     visit dune_url
   end
 
@@ -30,13 +36,13 @@ RSpec.describe 'movie details page' do
   it 'links back to discover page' do
     expect(page).to have_link("Discover Page")
     click_link "Discover Page"
-    expect(current_path).to eq("/users/#{user.id}/discover")
+    expect(current_path).to eq("/discover")
   end
 
   it 'links to viewing-party/new' do
     expect(page).to have_link("Create Viewing Party for Dune")
     click_link "Create Viewing Party for Dune"
-    expect(current_path).to eq("/users/#{user.id}/movies/438631/viewing-party/new")
+    expect(current_path).to eq("/movies/438631/viewing-party/new")
   end
 
   it 'shows movie title' do

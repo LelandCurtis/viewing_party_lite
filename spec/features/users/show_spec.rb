@@ -22,7 +22,7 @@ RSpec.describe 'user dashboard' do
 
     click_button "Discover Movies"
 
-    expect(current_path).to eq("/users/#{user_1.id}/discover")
+    expect(current_path).to eq("/discover")
   end
 
   describe 'viewing party sections' do
@@ -46,7 +46,7 @@ RSpec.describe 'user dashboard' do
         visit '/dashboard'
 
         click_link "Title: Dune"
-        expect(current_path).to eq("/users/#{user_1.id}/movies/#{movie.id}")
+        expect(current_path).to eq("/movies/#{movie.id}")
       end
     end
 

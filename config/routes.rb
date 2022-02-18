@@ -8,16 +8,18 @@ Rails.application.routes.draw do
 
 
 
-  resources :users, only: [:index, :create] do
-    get '/discover', to: 'users#discover'
-    post '/movies', to: 'movies#index'
-    resources :movies, only: [:index, :show] do
-      get '/viewing-party/new', to: 'parties#new'
-      post '/viewing-party/new', to: 'parties#create'
-    end
+  resources :users, only: [:index, :create]
+  
+  post '/movies', to: 'movies#index'
+  get '/discover', to: 'users#discover'
+  get '/dashboard', to: 'users#show'
+
+  resources :movies, only: [:index, :show] do
+    get '/viewing-party/new', to: 'parties#new'
+    post '/viewing-party/new', to: 'parties#create'
   end
 
-  get '/dashboard', to: 'users#show'
+
 
 
 
